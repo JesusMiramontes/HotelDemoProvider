@@ -1,8 +1,10 @@
 package com.miramontes.hoteldemoprovider.endpoint;
 
+import com.miramontes.hoteldemoprovider.model.HotelModel;
 import com.miramontes.hoteldemoprovider.repository.HotelRepository;
 import com.miramontes.hoteldemoprovider.util.HotelUtil;
-import com.miramontes.xsdclasses.GetHotelListRequest;
+import com.miramontes.xsdclasses.CreateHotelRequest;
+import com.miramontes.xsdclasses.CreateHotelResponse;
 import com.miramontes.xsdclasses.GetHotelListResponse;
 import java.util.stream.Collectors;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -21,13 +23,23 @@ public class HotelEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "getHotelListRequest")
     @ResponsePayload
-    public GetHotelListResponse getHotelList(@RequestPayload GetHotelListRequest request) {
+    public GetHotelListResponse getHotelList() {
         GetHotelListResponse response = new GetHotelListResponse();
         response.getHotels()
                 .addAll(
                         hotelRepository.findAll().stream()
                                 .map(HotelUtil::convertModelToWs)
                                 .collect(Collectors.toList()));
+        return response;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE, localPart = "createHotelRequest")
+    @ResponsePayload
+    public CreateHotelResponse createHotel(@RequestPayload CreateHotelRequest request) {
+        CreateHotelResponse response = new CreateHotelResponse();
+        HotelModel hotelModel =
+                hotelRepository.save(HotelUtil.convertWsToModel(request.getHotel()));
+        response.setHotel(HotelUtil.convertModelToWs(hotelModel));
         return response;
     }
 }
