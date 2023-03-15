@@ -1,7 +1,10 @@
 package com.miramontes.hoteldemoprovider.config;
 
+import com.miramontes.hoteldemoprovider.model.AmenityModel;
 import com.miramontes.hoteldemoprovider.model.HotelModel;
+import com.miramontes.hoteldemoprovider.repository.AmenityRepository;
 import com.miramontes.hoteldemoprovider.repository.HotelRepository;
+import java.util.Arrays;
 import java.util.Collections;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -10,13 +13,25 @@ import org.springframework.context.annotation.Configuration;
 public class SeedDb implements CommandLineRunner {
     private final HotelRepository hotelRepository;
 
-    public SeedDb(HotelRepository hotelRepository) {
+    private final AmenityRepository amenityRepository;
+
+    public SeedDb(HotelRepository hotelRepository, AmenityRepository amenityRepository) {
         this.hotelRepository = hotelRepository;
+        this.amenityRepository = amenityRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        seedAmenities();
         seedHotels();
+    }
+
+    private void seedAmenities() {
+        amenityRepository.saveAll(
+                Arrays.asList(
+                        AmenityModel.builder().name("WiFi").build(),
+                        AmenityModel.builder().name("PPV").build(),
+                        AmenityModel.builder().name("Pool Access").build()));
     }
 
     private void seedHotels() {
