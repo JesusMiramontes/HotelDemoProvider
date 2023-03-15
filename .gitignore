@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/java/com/miramontes/xsdclasses/
+/src/main/java/META-INF/JAXB/
