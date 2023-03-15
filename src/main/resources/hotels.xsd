@@ -9,8 +9,22 @@
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
             <xs:element name="address" type="xs:string"/>
-            <xs:element name="rating" type="xs:string"/>
+            <xs:element name="rating" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:element name="getHotelListRequest">
+        <xs:complexType>
+
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getHotelListResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="hotels" maxOccurs="unbounded" minOccurs="0" type="tns:Hotel" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
 </xs:schema>
