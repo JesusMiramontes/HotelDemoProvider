@@ -56,4 +56,21 @@ public class HotelEndpoint {
                                         -1, "NOTFOUND", "NOTFOUND", -1, new ArrayList<>()))));
         return response;
     }
+
+    @PayloadRoot(namespace = NAMESPACE, localPart = "deleteRequest")
+    @ResponsePayload
+    public Response delete(@RequestPayload DeleteRequest request) {
+        Response response = new Response();
+        Optional<HotelModel> hotelModel = hotelRepository.findById(request.getId());
+        hotelRepository.deleteById(request.getId());
+
+        if (hotelModel.isPresent()) {
+            response.setStatus(200);
+            response.setMsg("DELETED.");
+        } else {
+            response.setStatus(404);
+            response.setMsg("NOT FOUND.");
+        }
+        return response;
+    }
 }
