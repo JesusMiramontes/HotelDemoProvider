@@ -13,6 +13,8 @@ public class HotelUtil {
         hotel.setAddress(model.getAddress());
         hotel.setName(model.getName());
         hotel.setRating(model.getRating());
+        model.getAmenities()
+                .forEach(a -> hotel.getAmenities().add(AmenityUtil.convertModelToWs(a)));
         return hotel;
     }
 
@@ -22,6 +24,7 @@ public class HotelUtil {
         model.setAddress(ws.getAddress());
         model.setName(ws.getName());
         model.setRating(ws.getRating());
+        ws.getAmenities().forEach(a -> model.getAmenities().add(AmenityUtil.convertWsToModel(a)));
         return model;
     }
 }

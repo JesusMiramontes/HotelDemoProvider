@@ -21,10 +21,12 @@ public class HotelModel {
     private String address;
     private Integer rating;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(
+            cascade = {CascadeType.MERGE},
+            fetch = FetchType.EAGER)
     @JoinTable(
             name = "hotel_amenity",
-            joinColumns = {@JoinColumn(name = "hotel_id")},
-            inverseJoinColumns = {@JoinColumn(name = "amenity_id")})
+            joinColumns = {@JoinColumn(name = "amenity_id")},
+            inverseJoinColumns = {@JoinColumn(name = "hotel_id")})
     private List<AmenityModel> amenities;
 }

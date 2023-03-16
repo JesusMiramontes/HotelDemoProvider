@@ -6,6 +6,7 @@ import com.miramontes.hoteldemoprovider.repository.AmenityRepository;
 import com.miramontes.hoteldemoprovider.repository.HotelRepository;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,8 +36,14 @@ public class SeedDb implements CommandLineRunner {
     }
 
     private void seedHotels() {
+        List<AmenityModel> amenities = amenityRepository.findAll();
         hotelRepository.saveAll(
                 Collections.singletonList(
-                        HotelModel.builder().name("Lorem").address("ipsum").rating(5).build()));
+                        HotelModel.builder()
+                                .name("Lorem")
+                                .address("ipsum")
+                                .rating(5)
+                                .amenities(amenities)
+                                .build()));
     }
 }
