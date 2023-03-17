@@ -1,6 +1,7 @@
 package com.miramontes.hoteldemoprovider.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
@@ -28,5 +29,5 @@ public class HotelModel {
             name = "hotel_amenity",
             joinColumns = {@JoinColumn(name = "amenity_id")},
             inverseJoinColumns = {@JoinColumn(name = "hotel_id")})
-    private List<AmenityModel> amenities;
+    private List<AmenityModel> amenities = new ArrayList<>();
 }

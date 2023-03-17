@@ -1,6 +1,7 @@
 package com.miramontes.hoteldemoprovider.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
@@ -20,5 +21,5 @@ public class AmenityModel {
     private String name;
 
     @ManyToMany(mappedBy = "amenities")
-    private List<HotelModel> hotels;
+    private List<HotelModel> hotels = new ArrayList<>();
 }

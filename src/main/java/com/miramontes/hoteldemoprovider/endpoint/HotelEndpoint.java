@@ -73,4 +73,18 @@ public class HotelEndpoint {
         }
         return response;
     }
+
+    @PayloadRoot(namespace = NAMESPACE, localPart = "updateRequest")
+    @ResponsePayload
+    public UpdateResponse update(@RequestPayload UpdateRequest request) {
+        UpdateResponse response = new UpdateResponse();
+        Optional<HotelModel> optional = hotelRepository.findById(request.getHotel().getId());
+        if (optional.isPresent()) {
+            hotelRepository.save(HotelUtil.convertWsToModel(request.getHotel()));
+        }
+        response.setHotel(
+                HotelUtil.convertModelToWs(
+                        hotelRepository.findById(request.getHotel().getId()).get()));
+        return response;
+    }
 }

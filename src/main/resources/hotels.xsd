@@ -83,4 +83,20 @@
         </xs:complexType>
     </xs:element>
 
+    <!-- Get By id -->
+    <xs:element name="updateRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="hotel" type="tns:Hotel"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="updateResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="hotel" type="tns:Hotel"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
