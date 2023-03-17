@@ -1,11 +1,14 @@
 package com.miramontes.hoteldemoprovider.endpoint;
 
+import com.miramontes.hoteldemoprovider.model.AmenityModel;
 import com.miramontes.hoteldemoprovider.model.HotelModel;
+import com.miramontes.hoteldemoprovider.repository.AmenityRepository;
 import com.miramontes.hoteldemoprovider.repository.HotelRepository;
 import com.miramontes.hoteldemoprovider.util.AmenityUtil;
 import com.miramontes.hoteldemoprovider.util.HotelUtil;
 import com.miramontes.xsdclasses.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -17,9 +20,11 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 public class HotelEndpoint {
     public static final String NAMESPACE = "http://localhost:8080/";
     private final HotelRepository hotelRepository;
+    private final AmenityRepository amenityRepository;
 
-    public HotelEndpoint(HotelRepository hotelRepository) {
+    public HotelEndpoint(HotelRepository hotelRepository, AmenityRepository amenityRepository) {
         this.hotelRepository = hotelRepository;
+        this.amenityRepository = amenityRepository;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "getHotelListRequest")
@@ -90,10 +95,35 @@ public class HotelEndpoint {
                                             .getAmenities()
                                             .add(AmenityUtil.convertModelToWs(a)));
             hotelRepository.save(HotelUtil.convertWsToModel(request.getHotel()));
+            response.setHotel(
+                    HotelUtil.convertModelToWs(
+                            hotelRepository.findById(request.getHotel().getId()).get()));
         }
-        response.setHotel(
-                HotelUtil.convertModelToWs(
-                        hotelRepository.findById(request.getHotel().getId()).get()));
+        return response;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE, localPart = "updateAmenitiesHotelLinkByNameRequest")
+    @ResponsePayload
+    public UpdateAmenitiesHotelLinkByNameResponse updateAmenitiesByName(
+            @RequestPayload UpdateAmenitiesHotelLinkByNameRequest request) {
+        UpdateAmenitiesHotelLinkByNameResponse response =
+                new UpdateAmenitiesHotelLinkByNameResponse();
+
+        List<AmenityModel> amenities = new ArrayList<>();
+        request.getAmenityNames()
+                .forEach(
+                        name -> {
+                            Optional<AmenityModel> optionalAmenityModel =
+                                    amenityRepository.findByNameContainingIgnoreCase(name);
+
+                            optionalAmenityModel.ifPresent(amenities::add);
+                        });
+
+        Optional<HotelModel> hotel = hotelRepository.findById(request.getHotelId());
+        hotel.get().getAmenities().clear();
+        hotel.get().getAmenities().addAll(amenities);
+
+        response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
         return response;
     }
 }
