@@ -2,6 +2,7 @@ package com.miramontes.hoteldemoprovider.endpoint;
 
 import com.miramontes.hoteldemoprovider.model.HotelModel;
 import com.miramontes.hoteldemoprovider.repository.HotelRepository;
+import com.miramontes.hoteldemoprovider.util.AmenityUtil;
 import com.miramontes.hoteldemoprovider.util.HotelUtil;
 import com.miramontes.xsdclasses.*;
 import java.util.ArrayList;
@@ -79,7 +80,15 @@ public class HotelEndpoint {
     public UpdateResponse update(@RequestPayload UpdateRequest request) {
         UpdateResponse response = new UpdateResponse();
         Optional<HotelModel> optional = hotelRepository.findById(request.getHotel().getId());
+        request.getHotel().getAmenities().clear();
         if (optional.isPresent()) {
+            optional.get()
+                    .getAmenities()
+                    .forEach(
+                            a ->
+                                    request.getHotel()
+                                            .getAmenities()
+                                            .add(AmenityUtil.convertModelToWs(a)));
             hotelRepository.save(HotelUtil.convertWsToModel(request.getHotel()));
         }
         response.setHotel(
