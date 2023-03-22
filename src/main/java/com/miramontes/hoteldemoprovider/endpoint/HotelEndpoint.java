@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -29,37 +30,51 @@ public class HotelEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "getHotelListRequest")
     @ResponsePayload
-    public GetHotelListResponse getHotelList() {
-        GetHotelListResponse response = new GetHotelListResponse();
+    public ResponseHotelList getHotelList() {
+        ResponseHotelList response = new ResponseHotelList();
         response.getHotels()
                 .addAll(
                         hotelRepository.findAll().stream()
                                 .map(HotelUtil::convertModelToWs)
                                 .collect(Collectors.toList()));
+        response.setCode(HttpStatus.OK.value());
+        response.setMsg(HttpStatus.OK.name());
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "createHotelRequest")
     @ResponsePayload
-    public CreateHotelResponse createHotel(@RequestPayload CreateHotelRequest request) {
-        CreateHotelResponse response = new CreateHotelResponse();
+    public ResponseHotel createHotel(@RequestPayload CreateHotelRequest request) {
+        ResponseHotel response = new ResponseHotel();
         HotelModel hotelModel =
-                hotelRepository.save(HotelUtil.convertWsToModel(request.getHotel()));
+                hotelRepository.save(
+                        HotelModel.builder()
+                                .name(request.getName())
+                                .address(request.getAddress())
+                                .rating(request.getRating())
+                                .build());
+
         response.setHotel(HotelUtil.convertModelToWs(hotelModel));
+        response.setCode(HttpStatus.CREATED.value());
+        response.setMsg(HttpStatus.CREATED.name());
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "getByIdRequest")
     @ResponsePayload
-    public GetByIdResponse getById(@RequestPayload GetByIdRequest request) {
-        GetByIdResponse response = new GetByIdResponse();
+    public ResponseHotel getById(@RequestPayload GetByIdRequest request) {
+        ResponseHotel response = new ResponseHotel();
         Optional<HotelModel> hotelModel = hotelRepository.findById(request.getId());
-        // TODO: Throw error if not found.
-        response.setHotel(
-                HotelUtil.convertModelToWs(
-                        hotelModel.orElse(
-                                new HotelModel(
-                                        -1, "NOTFOUND", "NOTFOUND", -1, new ArrayList<>()))));
+
+        if (hotelModel.isEmpty()) {
+            response.setCode(HttpStatus.NOT_FOUND.value());
+            response.setMsg(HttpStatus.NOT_FOUND.name());
+        } else {
+            response.setCode(HttpStatus.OK.value());
+            response.setMsg("FOUND");
+            response.setHotel(HotelUtil.convertModelToWs(hotelModel.get()));
+        }
+
         return response;
     }
 
@@ -71,19 +86,19 @@ public class HotelEndpoint {
         hotelRepository.deleteById(request.getId());
 
         if (hotelModel.isPresent()) {
-            response.setStatus(200);
-            response.setMsg("DELETED.");
+            response.setCode(HttpStatus.OK.value());
+            response.setMsg("DELETED");
         } else {
-            response.setStatus(404);
-            response.setMsg("NOT FOUND.");
+            response.setCode(HttpStatus.NOT_FOUND.value());
+            response.setMsg(HttpStatus.NOT_FOUND.name());
         }
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "updateRequest")
     @ResponsePayload
-    public UpdateResponse update(@RequestPayload UpdateRequest request) {
-        UpdateResponse response = new UpdateResponse();
+    public ResponseHotel update(@RequestPayload UpdateRequest request) {
+        ResponseHotel response = new ResponseHotel();
         Optional<HotelModel> optional = hotelRepository.findById(request.getHotel().getId());
         request.getHotel().getAmenities().clear();
         if (optional.isPresent()) {
@@ -95,19 +110,24 @@ public class HotelEndpoint {
                                             .getAmenities()
                                             .add(AmenityUtil.convertModelToWs(a)));
             hotelRepository.save(HotelUtil.convertWsToModel(request.getHotel()));
+
+            response.setCode(HttpStatus.OK.value());
+            response.setMsg("UPDATED");
             response.setHotel(
                     HotelUtil.convertModelToWs(
                             hotelRepository.findById(request.getHotel().getId()).get()));
+        } else {
+            response.setCode(HttpStatus.NOT_FOUND.value());
+            response.setMsg(HttpStatus.NOT_FOUND.name());
         }
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "updateAmenitiesHotelLinkByNameRequest")
     @ResponsePayload
-    public UpdateAmenitiesHotelLinkByNameResponse updateAmenitiesByName(
+    public ResponseHotel updateAmenitiesByName(
             @RequestPayload UpdateAmenitiesHotelLinkByNameRequest request) {
-        UpdateAmenitiesHotelLinkByNameResponse response =
-                new UpdateAmenitiesHotelLinkByNameResponse();
+        ResponseHotel response = new ResponseHotel();
 
         List<AmenityModel> amenities = new ArrayList<>();
         request.getAmenityNames()
@@ -120,18 +140,26 @@ public class HotelEndpoint {
                         });
 
         Optional<HotelModel> hotel = hotelRepository.findById(request.getHotelId());
-        hotel.get().getAmenities().clear();
-        hotel.get().getAmenities().addAll(amenities);
+        if (hotel.isPresent()) {
+            hotel.get().getAmenities().clear();
+            hotel.get().getAmenities().addAll(amenities);
 
-        response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
+            response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
+            response.setCode(HttpStatus.OK.value());
+            response.setMsg("UPDATED");
+        } else {
+            response.setCode(HttpStatus.NOT_FOUND.value());
+            response.setMsg("HOTEL NOT FOUND");
+        }
+
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "updateAmenitiesHotelLinkByIdRequest")
     @ResponsePayload
-    public UpdateAmenitiesHotelLinkByIdResponse updateAmenitiesById(
+    public ResponseHotel updateAmenitiesById(
             @RequestPayload UpdateAmenitiesHotelLinkByIdRequest request) {
-        UpdateAmenitiesHotelLinkByIdResponse response = new UpdateAmenitiesHotelLinkByIdResponse();
+        ResponseHotel response = new ResponseHotel();
 
         List<AmenityModel> amenities = new ArrayList<>();
         request.getAmenityIds()
@@ -142,10 +170,19 @@ public class HotelEndpoint {
                         });
 
         Optional<HotelModel> hotel = hotelRepository.findById(request.getHotelId());
-        hotel.get().getAmenities().clear();
-        hotel.get().getAmenities().addAll(amenities);
 
-        response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
+        if (hotel.isPresent()) {
+            hotel.get().getAmenities().clear();
+            hotel.get().getAmenities().addAll(amenities);
+
+            response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
+            response.setCode(HttpStatus.OK.value());
+            response.setMsg("UPDATED");
+        } else {
+            response.setCode(HttpStatus.NOT_FOUND.value());
+            response.setMsg("HOTEL NOT FOUND");
+        }
+
         return response;
     }
 }

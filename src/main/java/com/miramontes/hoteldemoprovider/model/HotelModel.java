@@ -29,5 +29,6 @@ public class HotelModel {
             name = "hotel_amenity",
             joinColumns = {@JoinColumn(name = "amenity_id")},
             inverseJoinColumns = {@JoinColumn(name = "hotel_id")})
+    @Builder.Default
     private List<AmenityModel> amenities = new ArrayList<>();
 }
