@@ -126,4 +126,26 @@ public class HotelEndpoint {
         response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
         return response;
     }
+
+    @PayloadRoot(namespace = NAMESPACE, localPart = "updateAmenitiesHotelLinkByIdRequest")
+    @ResponsePayload
+    public UpdateAmenitiesHotelLinkByIdResponse updateAmenitiesById(
+            @RequestPayload UpdateAmenitiesHotelLinkByIdRequest request) {
+        UpdateAmenitiesHotelLinkByIdResponse response = new UpdateAmenitiesHotelLinkByIdResponse();
+
+        List<AmenityModel> amenities = new ArrayList<>();
+        request.getAmenityIds()
+                .forEach(
+                        id -> {
+                            Optional<AmenityModel> byId = amenityRepository.findById(id);
+                            byId.ifPresent(amenities::add);
+                        });
+
+        Optional<HotelModel> hotel = hotelRepository.findById(request.getHotelId());
+        hotel.get().getAmenities().clear();
+        hotel.get().getAmenities().addAll(amenities);
+
+        response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
+        return response;
+    }
 }

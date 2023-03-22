@@ -116,4 +116,21 @@
         </xs:complexType>
     </xs:element>
 
+    <!-- Update Amenities Link By Id-->
+    <xs:element name="updateAmenitiesHotelLinkByIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="hotelId" type="xs:int"/>
+                <xs:element name="amenityIds" maxOccurs="unbounded" minOccurs="0" type="xs:int" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="updateAmenitiesHotelLinkByIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="hotel" type="tns:Hotel"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
