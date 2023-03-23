@@ -38,6 +38,7 @@
                 <xs:element name="name" type="xs:string"/>
                 <xs:element name="address" type="xs:string"/>
                 <xs:element name="rating" type="xs:int"/>
+                <xs:element name="amenitiesIds" type="xs:int" maxOccurs="unbounded" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

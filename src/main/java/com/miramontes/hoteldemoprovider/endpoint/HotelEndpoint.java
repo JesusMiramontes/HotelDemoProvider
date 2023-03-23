@@ -46,12 +46,22 @@ public class HotelEndpoint {
     @ResponsePayload
     public ResponseHotel createHotel(@RequestPayload CreateHotelRequest request) {
         ResponseHotel response = new ResponseHotel();
+
+        List<AmenityModel> amenities = new ArrayList<>();
+        request.getAmenitiesIds()
+                .forEach(
+                        id -> {
+                            Optional<AmenityModel> byId = amenityRepository.findById(id);
+                            byId.ifPresent(amenities::add);
+                        });
+
         HotelModel hotelModel =
                 hotelRepository.save(
                         HotelModel.builder()
                                 .name(request.getName())
                                 .address(request.getAddress())
                                 .rating(request.getRating())
+                                .amenities(amenities)
                                 .build());
 
         response.setHotel(HotelUtil.convertModelToWs(hotelModel));
