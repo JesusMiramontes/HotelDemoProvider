@@ -23,6 +23,13 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="ResponseStatus">
+        <xs:sequence>
+            <xs:element name="code" type="xs:int" minOccurs="0"/>
+            <xs:element name="msg" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <!-- List -->
     <xs:element name="getHotelListRequest">
         <xs:complexType>
@@ -94,16 +101,14 @@
     <xs:element name="Response">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="code" type="xs:int" minOccurs="0"/>
-                <xs:element name="msg" type="xs:string"/>
+                <xs:element name="responseStatus" type="tns:ResponseStatus"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:element name="responseHotel">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="code" type="xs:int" minOccurs="0"/>
-                <xs:element name="msg" type="xs:string"/>
+                <xs:element name="responseStatus" type="tns:ResponseStatus"/>
                 <xs:element name="hotel" type="tns:Hotel"/>
             </xs:sequence>
         </xs:complexType>
@@ -111,8 +116,7 @@
     <xs:element name="responseHotelList">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="code" type="xs:int" minOccurs="0"/>
-                <xs:element name="msg" type="xs:string"/>
+                <xs:element name="responseStatus" type="tns:ResponseStatus"/>
                 <xs:element name="hotels" maxOccurs="unbounded" minOccurs="0" type="tns:Hotel" />
             </xs:sequence>
         </xs:complexType>
