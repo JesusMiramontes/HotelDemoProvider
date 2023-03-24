@@ -8,6 +8,8 @@ public class ResponseUtil {
     private static final String DELETED = "DELETED";
     private static final String UPDATED = "UPDATED";
 
+    private ResponseUtil() {}
+
     public static ResponseStatus ok() {
         return set(HttpStatus.OK.value(), HttpStatus.OK.name());
     }
