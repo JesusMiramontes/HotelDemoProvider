@@ -36,7 +36,7 @@ public class HotelEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "deleteRequest")
     @ResponsePayload
-    public Response delete(@RequestPayload DeleteRequest request) {
+    public ResponseStatus delete(@RequestPayload DeleteRequest request) {
         return hotelService.delete(request);
     }
 

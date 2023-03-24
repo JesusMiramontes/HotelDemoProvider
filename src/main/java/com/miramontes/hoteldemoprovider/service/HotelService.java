@@ -45,17 +45,14 @@ public class HotelService {
         return response;
     }
 
-    public Response delete(DeleteRequest request) {
-        Response response = new Response();
+    public ResponseStatus delete(DeleteRequest request) {
         Optional<HotelModel> hotelModel = repository.findById(request.getId());
         repository.deleteById(request.getId());
 
         if (hotelModel.isPresent()) {
-            response.setResponseStatus(ResponseUtil.deleted());
-        } else {
-            response.setResponseStatus(ResponseUtil.notFound());
+            return ResponseUtil.deleted();
         }
-        return response;
+        return ResponseUtil.notFound();
     }
 
     public ResponseHotel update(UpdateRequest request) {

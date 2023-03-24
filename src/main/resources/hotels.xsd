@@ -98,13 +98,6 @@
     </xs:element>
 
     <!-- Responses -->
-    <xs:element name="Response">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="responseStatus" type="tns:ResponseStatus"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="responseHotel">
         <xs:complexType>
             <xs:sequence>
