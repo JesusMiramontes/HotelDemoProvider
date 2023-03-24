@@ -13,6 +13,7 @@ import lombok.*;
 @Builder
 @ToString
 @Table(name = "amenity")
+@EqualsAndHashCode
 public class AmenityModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -167,7 +167,7 @@ public class HotelService {
         List<AmenityModel> amenities = new ArrayList<>();
         amenityIds.forEach(
                 id -> {
-                    Optional<AmenityModel> byId = amenityService.findById(id);
+                    Optional<AmenityModel> byId = amenityService.getAmenityById(id);
                     byId.ifPresent(amenities::add);
                 });
         return amenities;
