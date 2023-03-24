@@ -22,6 +22,13 @@ public class HotelEndpoint {
         return hotelService.getResponseHotelList();
     }
 
+    @PayloadRoot(namespace = NAMESPACE, localPart = "getHotelListByNameLikeRequest")
+    @ResponsePayload
+    public ResponseHotelList getHotelListRequestByNameLike(
+            @RequestPayload GetHotelListByNameLikeRequest request) {
+        return hotelService.getResponseHotelListByNameLike(request.getName());
+    }
+
     @PayloadRoot(namespace = NAMESPACE, localPart = "createHotelRequest")
     @ResponsePayload
     public ResponseHotel createHotel(@RequestPayload CreateHotelRequest request) {

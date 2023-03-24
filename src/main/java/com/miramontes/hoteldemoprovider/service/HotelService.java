@@ -31,6 +31,22 @@ public class HotelService {
         return response;
     }
 
+    public ResponseHotelList getResponseHotelListByNameLike(String name) {
+        ResponseHotelList response = new ResponseHotelList();
+        response.getHotels()
+                .addAll(
+                        repository.findByNameContainingIgnoreCase(name).stream()
+                                .map(HotelUtil::convertModelToWs)
+                                .collect(Collectors.toList()));
+
+        if (!response.getHotels().isEmpty()) {
+            response.setResponseStatus(ResponseUtil.ok());
+        } else {
+            response.setResponseStatus(ResponseUtil.notFound());
+        }
+        return response;
+    }
+
     public ResponseHotel getHotelById(GetByIdRequest request) {
         ResponseHotel response = new ResponseHotel();
         Optional<HotelModel> hotelModel = repository.findById(request.getId());
