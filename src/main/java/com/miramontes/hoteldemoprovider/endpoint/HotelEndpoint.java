@@ -53,34 +53,10 @@ public class HotelEndpoint {
         return hotelService.updateAmenitiesByName(request);
     }
 
-    //    @PayloadRoot(namespace = NAMESPACE, localPart = "updateAmenitiesHotelLinkByIdRequest")
-    //    @ResponsePayload
-    //    public ResponseHotel updateAmenitiesById(
-    //            @RequestPayload UpdateAmenitiesHotelLinkByIdRequest request) {
-    //        ResponseHotel response = new ResponseHotel();
-    //
-    //        List<AmenityModel> amenities = new ArrayList<>();
-    //        request.getAmenityIds()
-    //                .forEach(
-    //                        id -> {
-    //                            Optional<AmenityModel> byId = amenityRepository.findById(id);
-    //                            byId.ifPresent(amenities::add);
-    //                        });
-    //
-    //        Optional<HotelModel> hotel = hotelRepository.findById(request.getHotelId());
-    //
-    //        if (hotel.isPresent()) {
-    //            hotel.get().getAmenities().clear();
-    //            hotel.get().getAmenities().addAll(amenities);
-    //
-    //            response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
-    //            response.setCode(HttpStatus.OK.value());
-    //            response.setMsg("UPDATED");
-    //        } else {
-    //            response.setCode(HttpStatus.NOT_FOUND.value());
-    //            response.setMsg("HOTEL NOT FOUND");
-    //        }
-    //
-    //        return response;
-    //    }
+    @PayloadRoot(namespace = NAMESPACE, localPart = "updateAmenitiesHotelLinkByIdRequest")
+    @ResponsePayload
+    public ResponseHotel updateAmenitiesById(
+            @RequestPayload UpdateAmenitiesHotelLinkByIdRequest request) {
+        return hotelService.updateAmenitiesById(request);
+    }
 }

@@ -7,6 +7,7 @@ import com.miramontes.hoteldemoprovider.util.AmenityUtil;
 import com.miramontes.hoteldemoprovider.util.HotelUtil;
 import com.miramontes.hoteldemoprovider.util.ResponseUtil;
 import com.miramontes.xsdclasses.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,5 +126,34 @@ public class HotelService {
 
     public HotelModel save(HotelModel hotel) {
         return repository.save(hotel);
+    }
+
+    public ResponseHotel updateAmenitiesById(UpdateAmenitiesHotelLinkByIdRequest request) {
+
+        ResponseHotel response = new ResponseHotel();
+
+        Optional<HotelModel> hotel = findById(request.getHotelId());
+
+        if (hotel.isPresent()) {
+            hotel.get().getAmenities().clear();
+            hotel.get().getAmenities().addAll(convertAmenitiesIdsToList(request.getAmenityIds()));
+
+            response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
+            response.setResponseStatus(ResponseUtil.updated());
+        } else {
+            response.setResponseStatus(ResponseUtil.notFound());
+        }
+
+        return response;
+    }
+
+    private List<AmenityModel> convertAmenitiesIdsToList(List<Integer> amenityIds) {
+        List<AmenityModel> amenities = new ArrayList<>();
+        amenityIds.forEach(
+                id -> {
+                    Optional<AmenityModel> byId = amenityService.findById(id);
+                    byId.ifPresent(amenities::add);
+                });
+        return amenities;
     }
 }

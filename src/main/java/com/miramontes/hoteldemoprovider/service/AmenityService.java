@@ -43,4 +43,8 @@ public class AmenityService {
                 });
         return amenities;
     }
+
+    public Optional<AmenityModel> findById(Integer id) {
+        return repository.findById(id);
+    }
 }
