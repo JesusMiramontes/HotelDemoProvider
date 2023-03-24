@@ -34,7 +34,7 @@ public class ResponseUtil {
         return set(HttpStatus.CREATED.value(), HttpStatus.CREATED.name());
     }
 
-    private static ResponseStatus set(int code, String msg) {
+    public static ResponseStatus set(int code, String msg) {
         ResponseStatus responseStatus = new ResponseStatus();
         responseStatus.setCode(code);
         responseStatus.setMsg(msg);
