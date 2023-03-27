@@ -9,7 +9,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @Endpoint
 public class HotelEndpoint {
-    public static final String NAMESPACE = "http://localhost:8080/";
+    public static final String NAMESPACE = "http://localhost:8081/";
     private final HotelService hotelService;
 
     public HotelEndpoint(HotelService hotelService) {
