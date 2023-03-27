@@ -1,5 +1,6 @@
 package com.miramontes.hoteldemoprovider.endpoint;
 
+import com.miramontes.hoteldemoprovider.service.AmenityService;
 import com.miramontes.hoteldemoprovider.service.HotelService;
 import com.miramontes.xsdclasses.*;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -11,9 +12,11 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 public class HotelEndpoint {
     public static final String NAMESPACE = "http://localhost:8081/";
     private final HotelService hotelService;
+    private final AmenityService amenityService;
 
-    public HotelEndpoint(HotelService hotelService) {
+    public HotelEndpoint(HotelService hotelService, AmenityService amenityService) {
         this.hotelService = hotelService;
+        this.amenityService = amenityService;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "getHotelListRequest")
@@ -65,5 +68,11 @@ public class HotelEndpoint {
     public ResponseHotel updateAmenitiesById(
             @RequestPayload UpdateAmenitiesHotelLinkByIdRequest request) {
         return hotelService.updateAmenitiesById(request);
+    }
+
+    @PayloadRoot(namespace = NAMESPACE, localPart = "getAmenitiesListRequest")
+    @ResponsePayload
+    public ResponseAmenitiesList amenitiesList(@RequestPayload GetAmenitiesListRequest request) {
+        return amenityService.getResponseAmenityList();
     }
 }
