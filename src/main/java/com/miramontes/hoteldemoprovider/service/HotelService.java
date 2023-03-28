@@ -120,7 +120,7 @@ public class HotelService {
         ResponseHotel response = new ResponseHotel();
 
         List<AmenityModel> amenities =
-                amenityService.convertAmenitiesNamesToList(request.getAmenityNames());
+                amenityService.convertAmenitiesNamesToList(request.getAmenitiesNames());
 
         Optional<HotelModel> hotel = findById(request.getHotelId());
         if (hotel.isPresent()) {
@@ -152,7 +152,7 @@ public class HotelService {
 
         if (hotel.isPresent()) {
             hotel.get().getAmenities().clear();
-            hotel.get().getAmenities().addAll(convertAmenitiesIdsToList(request.getAmenityIds()));
+            hotel.get().getAmenities().addAll(convertAmenitiesIdsToList(request.getAmenitiesIds()));
 
             response.setHotel(HotelUtil.convertModelToWs(hotel.get()));
             response.setResponseStatus(ResponseUtil.updated());
